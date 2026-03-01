@@ -2,13 +2,16 @@
 
 A sleek iOS widget that keeps you updated on your favourite football team — live scores, upcoming fixtures, and recent results — all powered by the SofaScore API (no API key required).
 
+> **Supports both Soccer ⚽ and NFL 🏈!**
+
 ## Features
 
-- **🔴 Live Scores** — real-time score updates with match minute indicator
+- **🔴 Live Scores** — real-time score updates with match minute (soccer) or quarter (NFL)
 - **📅 Upcoming Matches** — shows the next fixture with relative date (e.g. "Tomorrow at 16:00")
 - **✅ Recent Results** — displays the last result with win/draw/loss badge
 - **🎨 Beautiful UI** — dark gradient background with team crests and gold accents
 - **⚡ Smart Priority** — automatically picks the most relevant game to display (Live → Today → Last Result → Next Match)
+- **🌐 Multi-Sport** — switch between soccer and NFL with a single config change
 
 ## Preview
 
@@ -20,18 +23,41 @@ A sleek iOS widget that keeps you updated on your favourite football team — li
 
 1. Download [Scriptable](https://apps.apple.com/app/scriptable/id1405459188) from the App Store
 2. Copy the contents of [`football-game-tracker.js`](football-game-tracker.js) into a new script
-3. **Customize your team** — change `TEAM_ID` on line 6 to your team's [SofaScore](https://sofascore.com) ID:
+3. **Choose your sport** — set `SPORT` at the top of the script:
    ```js
-   const TEAM_ID = 5926; // Default: Grêmio 🇧🇷
+   const SPORT = "soccer"; // or "nfl"
    ```
-4. Add a **medium-sized** Scriptable widget to your Home Screen
-5. Long-press the widget → Edit Widget → select the script
+4. **Customize your team** — change `TEAM_ID` to your team's [SofaScore](https://sofascore.com) ID:
+
+   ```js
+   // Soccer examples
+   const TEAM_ID = 5926; // Grêmio 🇧🇷
+   const TEAM_ID = 2817; // Barcelona 🇪🇸
+   const TEAM_ID = 17; // Manchester United 🏴󠁧󠁢󠁥󠁮󠁧󠁿
+
+   // NFL examples
+   const TEAM_ID = 4388; // Kansas City Chiefs
+   const TEAM_ID = 4389; // San Francisco 49ers
+   ```
+
+5. Add a **medium-sized** Scriptable widget to your Home Screen
+6. Long-press the widget → Edit Widget → select the script
 
 ## Finding Your Team ID
 
 1. Go to [sofascore.com](https://www.sofascore.com)
 2. Search for your team and open the team page
-3. The team ID is the number in the URL: `sofascore.com/team/football/team-name/{TEAM_ID}`
+3. The team ID is the number in the URL:
+   - Soccer: `sofascore.com/team/football/team-name/{TEAM_ID}`
+   - NFL: `sofascore.com/team/american-football/team-name/{TEAM_ID}`
+
+## Sport Differences
+
+| Feature        | Soccer ⚽                   | NFL 🏈                 |
+| -------------- | --------------------------- | ---------------------- |
+| Live indicator | Match minute (e.g. `⏱ 72'`) | Quarter (e.g. `🏈 Q3`) |
+| Labels         | Portuguese (pt-BR)          | English                |
+| Result badge   | Vitória / Empate / Derrota  | Win / Tie / Loss       |
 
 ## Customization
 

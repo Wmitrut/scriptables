@@ -18,9 +18,9 @@
 
 ## 📦 Scripts
 
-| Script                                             | Description                                                                  |
-| -------------------------------------------------- | ---------------------------------------------------------------------------- |
-| [🏟️ Football Game Tracker](football-game-tracker/) | Track your football team's live scores, upcoming matches, and recent results |
+| Script                                             | Description                                                                                  |
+| -------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| [🏟️ Football Game Tracker](football-game-tracker/) | Track your team's live scores, upcoming matches, and results — supports Soccer ⚽ and NFL 🏈 |
 
 ---
 

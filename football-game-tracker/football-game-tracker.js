@@ -1,15 +1,48 @@
 // ============================================
-// 🏟️ Football Team - Scriptable App
+// 🏟️ Football Game Tracker - Scriptable App
+// Supports Soccer ⚽ and NFL 🏈
 // Uses SofaScore unofficial API (no key needed)
 // ============================================
 
-const TEAM_ID = 5926; // SofaScore team ID for Grêmio
+// ─── Configuration ──────────────────────────────────────────
+// SPORT: "soccer" or "nfl"
+const SPORT = "soccer";
+
+// TEAM_ID: Your team's SofaScore ID
+// Soccer examples: 5926 (Grêmio), 2817 (Barcelona), 17 (Manchester United)
+// NFL examples:    4388 (Kansas City Chiefs), 4389 (San Francisco 49ers)
+const TEAM_ID = 5926;
+
 const TEAM_SHIELD = `https://api.sofascore.app/api/v1/team/${TEAM_ID}/image`;
 const BG_COLOR_DARK = new Color("#0a1628");
 const BG_COLOR_BLUE = new Color("#0d3b8c");
 const GOLD = new Color("#f5c800");
 const WHITE = new Color("#ffffff");
 const GRAY = new Color("#aaaaaa");
+
+// ─── Sport-specific labels ───────────────────────────────────
+const LABELS =
+  SPORT === "nfl"
+    ? {
+        live: "🔴 LIVE",
+        finished: "Final",
+        win: "✅ Win!",
+        draw: "🤝 Tie",
+        loss: "❌ Loss",
+        today: "🏈 Game day!",
+        noGame: "No game found 😢",
+        vs: "VS",
+      }
+    : {
+        live: "🔴 AO VIVO",
+        finished: "Encerrado",
+        win: "✅ Vitória!",
+        draw: "🤝 Empate",
+        loss: "❌ Derrota",
+        today: "🎽 Jogo hoje!",
+        noGame: "Nenhum jogo encontrado 😢",
+        vs: "VS",
+      };
 
 // ─── Fetch last + next events ───────────────────────────────
 async function fetchTeamEvents() {
@@ -123,9 +156,9 @@ async function buildWidget(event, state) {
   center.centerAlignContent();
 
   if (state === "LIVE") {
-    addScoreCenter(center, teamScore, adversaryScore, "🔴 AO VIVO");
+    addScoreCenter(center, teamScore, adversaryScore, LABELS.live);
   } else if (state === "FINISHED") {
-    addScoreCenter(center, teamScore, adversaryScore, "Encerrado");
+    addScoreCenter(center, teamScore, adversaryScore, LABELS.finished);
   } else {
     // UPCOMING
     const vsText = center.addText("VS");
@@ -147,18 +180,25 @@ async function buildWidget(event, state) {
 
   // ── Bottom status bar ──
   if (state === "LIVE") {
-    const minute = event.time?.currentPeriodStartTimestamp
-      ? Math.floor(
-          (Date.now() / 1000 - event.time.currentPeriodStartTimestamp) / 60,
-        )
-      : "?";
-    addBottomPill(widget, `⏱ ${minute}'`, new Color("#cc0000"));
+    let pillText;
+    if (SPORT === "nfl") {
+      const quarter = event.time?.period ?? "?";
+      pillText = `🏈 Q${quarter}`;
+    } else {
+      const minute = event.time?.currentPeriodStartTimestamp
+        ? Math.floor(
+            (Date.now() / 1000 - event.time.currentPeriodStartTimestamp) / 60,
+          )
+        : "?";
+      pillText = `⏱ ${minute}'`;
+    }
+    addBottomPill(widget, pillText, new Color("#cc0000"));
   } else if (state === "UPCOMING" && isToday(event.startTimestamp)) {
-    addBottomPill(widget, "🎽 Jogo hoje!", new Color("#1a5c2a"));
+    addBottomPill(widget, LABELS.today, new Color("#1a5c2a"));
   } else if (state === "FINISHED") {
     const won = teamScore > adversaryScore;
     const drew = teamScore === adversaryScore;
-    const label = won ? "✅ Vitória!" : drew ? "🤝 Empate" : "❌ Derrota";
+    const label = won ? LABELS.win : drew ? LABELS.draw : LABELS.loss;
     const color = won
       ? new Color("#1a5c2a")
       : drew
@@ -260,7 +300,7 @@ async function main() {
 
   if (!event) {
     const w = new ListWidget();
-    w.addText("Nenhum jogo encontrado 😢").textColor = WHITE;
+    w.addText(LABELS.noGame).textColor = WHITE;
     Script.setWidget(w);
     return;
   }
